@@ -24,7 +24,7 @@ const userSchema = new mongoose.Schema(
       trim: true,
       index: true,
     },
-    avtar: {
+    avatar: {
       type: String, // cloudnary URL store
       required: true,
     },
@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema(
     },
     watchHistory: [
       {
-        type: Schema.type.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Video",
       },
     ],
@@ -50,13 +50,14 @@ const userSchema = new mongoose.Schema(
 
 // mongoose na doc ma rahel pre middlwere no use karish je password save thay te pela tene conver karje bcrypt ma
 
-userSchema.pre("save", function async(next) {
+userSchema.pre("save", async function () {
   // jyare this.password no hoy tyarej thavu joye to if conditon and ismodify function
 
-  if (!this.isModified("password")) return next();
-  this.password = bcrypt.hash(this.password, 10);
-  next();
+  if (!this.isModified("password")) return;
+
+  this.password = await bcrypt.hash(this.password, 10);
 });
+
 // password compare karva mate aayaj logic lakhishu
 
 userSchema.methods.isPasswordCorrect = async function () {
